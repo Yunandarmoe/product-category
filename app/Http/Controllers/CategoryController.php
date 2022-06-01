@@ -8,9 +8,10 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::paginate(5);
+        $categories = Category::where('name', 'like', '%' . $request->input('query') . '%')
+        ->paginate(5);
 
         return view('category.index', compact('categories'));
     }
@@ -30,7 +31,7 @@ class CategoryController extends Controller
             'name' => $request->name,
         ]);
 
-        return redirect()->back()->with('success', 'Product successfully stored.');
+        return redirect()->route('category.index')->with('success', 'Product successfully stored.');
     }
 
     public function edit($id)
@@ -62,12 +63,5 @@ class CategoryController extends Controller
         $category->delete();
 
         return redirect()->back()->with('success', 'Product successfully deleted.');
-    }
-
-    public function search(Request $request)
-    {
-        $data = Category::where('name', 'like', '%' . $request->input('query') . '%')
-            ->get();
-        return view('category.search', ['categories' => $data]);
     }
 }

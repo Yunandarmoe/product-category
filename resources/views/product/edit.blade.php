@@ -25,7 +25,7 @@
                 <div>
                 @enderror
             </div>
-            <select name="category_name[]" class="form-select mt-3 @error('category_name') border-danger @enderror" multiple>
+            <select name="category_id[]" class="form-select mt-3 @error('category_id') border-danger @enderror" multiple>
                 <option value="">Category</option>
                 @foreach ($categories as $category)
                 <option value="{{ $category->id }}"> 
@@ -33,7 +33,7 @@
                 </option>
                 @endforeach
             </select>
-            @error('category_name')
+            @error('category_id')
             <div class="text-danger">
             {{ ($message) }}
             <div>

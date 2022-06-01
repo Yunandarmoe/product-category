@@ -7,8 +7,8 @@
         <a class="btn btn-success btn-sm" href="{{ route('category.create') }}">Create New</a>
         <a class="btn btn-success btn-sm" href="{{ route('home') }}">Home Page</a>
     </div>
-    <form action="{{ route('category.search') }}" method="GET" class="my-3">
-        <input type="text" name="query" placeholder="Free Search"/>
+    <form action="{{ route('category.index') }}" method="GET" class="my-3">
+        <input type="search" name="query" placeholder="Free Search"/>
         <button type="submit">Search</button>
     </form>
     @if(session()->has('success'))

@@ -8,11 +8,15 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
-    {   
-        $products = Product::paginate(5);
+    public function index(Request $request)
+    {
 
-        return view('product.index', compact('products', $products));
+        $products = Product::where('name', 'like', '%' . $request->input('query') . '%')
+            ->paginate(5);
+
+        $categories = Category::all();
+
+        return view('product.index', compact('products', 'categories'));
     }
 
     public function create()
@@ -25,17 +29,17 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'category_name' => 'required'
+            'category_id' => 'required'
         ]);
 
         $product = Product::create([
             'name' => $request->name,
         ]);
 
-        $categories = $request->category_name;
+        $categories = $request->category_id;
         $product->categories()->attach($categories);
 
-        return redirect()->back();
+        return redirect()->route('product.index')->with('success', 'Product successfully stored.');
     }
 
     public function show($id)
@@ -57,7 +61,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'category_name' => 'required'
+            'category_id' => 'required'
         ]);
 
         $product = Product::findOrFail($id);
@@ -66,7 +70,7 @@ class ProductController extends Controller
             'name' => $request->name,
         ]);
 
-        $product->categories()->sync($request->category_name);
+        $product->categories()->sync($request->category_id);
 
         return redirect()->back()->with('success', 'Product successfully updated.');
     }
@@ -78,15 +82,5 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->back()->with('success', 'Product successfully deleted.');
-    }
-
-    public function search(Request $request)
-    {
-        $data = Product::where('name', 'like', '%' . $request->input('query') . '%')
-            ->get();
-        
-        $categories = Category::all();
-        
-        return view('product.search', ['products' => $data], compact('categories'));
     }
 }
